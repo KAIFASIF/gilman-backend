@@ -2,17 +2,15 @@ package com.kaif.gilmanbackend.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.kaif.gilmanbackend.entities.User;
 
 @RestController
 public class TempControlllers {
 
     @GetMapping("/demo")
     public ResponseEntity<String> demo() {
-        return ResponseEntity.ok("feree");
+        return ResponseEntity.ok("feressdddddde");
     }
 
     @GetMapping("/user/one")

@@ -1,26 +1,24 @@
 package com.kaif.gilmanbackend.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.kaif.gilmanbackend.repos.UserRepository;
+import com.kaif.gilmanbackend.repos.UserRepo;
 
 ;
 
 @Service
 public class UserDetailsServiceImp implements UserDetailsService {
 
-    private final UserRepository repository;
-
-    public UserDetailsServiceImp(UserRepository repository) {
-        this.repository = repository;
-    }
+    @Autowired
+    private UserRepo userRepo;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return repository.findByUsername(username)
+        return userRepo.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 }

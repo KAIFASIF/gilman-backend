@@ -1,13 +1,6 @@
 package com.kaif.gilmanbackend.service;
 
-
-
-// import com.helloIftekhar.springJwt.model.AuthenticationResponse;
-// import com.helloIftekhar.springJwt.model.Role;
-// import com.helloIftekhar.springJwt.model.Token;
-// import com.helloIftekhar.springJwt.model.User;
-// import com.helloIftekhar.springJwt.repository.TokenRepository;
-// import com.helloIftekhar.springJwt.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,38 +10,32 @@ import com.kaif.gilmanbackend.entities.AuthenticationResponse;
 import com.kaif.gilmanbackend.entities.Token;
 import com.kaif.gilmanbackend.entities.User;
 import com.kaif.gilmanbackend.repos.TokenRepository;
-import com.kaif.gilmanbackend.repos.UserRepository;
+import com.kaif.gilmanbackend.repos.UserRepo;
 
 import java.util.List;
-
 
 @Service
 public class AuthenticationService {
 
-    private final UserRepository repository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
+    @Autowired
+    private UserRepo userRepo;
 
-    private final TokenRepository tokenRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-    private final AuthenticationManager authenticationManager;
+    @Autowired
+    private JwtService jwtService;
 
-    public AuthenticationService(UserRepository repository,
-                                 PasswordEncoder passwordEncoder,
-                                 JwtService jwtService,
-                                 TokenRepository tokenRepository,
-                                 AuthenticationManager authenticationManager) {
-        this.repository = repository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtService = jwtService;
-        this.tokenRepository = tokenRepository;
-        this.authenticationManager = authenticationManager;
-    }
+    @Autowired
+    private TokenRepository tokenRepository;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     public AuthenticationResponse register(User request) {
 
         // check if user already exist. if exist than authenticate the user
-        if(repository.findByUsername(request.getUsername()).isPresent()) {
+        if (userRepo.findByUsername(request.getUsername()).isPresent()) {
             return new AuthenticationResponse(null, "User already exist");
         }
 
@@ -58,10 +45,9 @@ public class AuthenticationService {
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-
         user.setRole(request.getRole());
 
-        user = repository.save(user);
+        user = userRepo.save(user);
 
         String jwt = jwtService.generateToken(user);
 
@@ -75,11 +61,9 @@ public class AuthenticationService {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),
-                        request.getPassword()
-                )
-        );
+                        request.getPassword()));
 
-        User user = repository.findByUsername(request.getUsername()).orElseThrow();
+        User user = userRepo.findByUsername(request.getUsername()).orElseThrow();
         String jwt = jwtService.generateToken(user);
 
         revokeAllTokenByUser(user);
@@ -88,18 +72,20 @@ public class AuthenticationService {
         return new AuthenticationResponse(jwt, "User login was successful");
 
     }
+
     private void revokeAllTokenByUser(User user) {
         List<Token> validTokens = tokenRepository.findAllTokensByUser(user.getId());
-        if(validTokens.isEmpty()) {
+        if (validTokens.isEmpty()) {
             return;
         }
 
-        validTokens.forEach(t-> {
+        validTokens.forEach(t -> {
             t.setLoggedOut(true);
         });
 
         tokenRepository.saveAll(validTokens);
     }
+
     private void saveUserToken(String jwt, User user) {
         Token token = new Token();
         token.setToken(jwt);
