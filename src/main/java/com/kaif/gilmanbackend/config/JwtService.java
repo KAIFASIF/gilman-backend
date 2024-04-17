@@ -85,8 +85,8 @@ public class JwtService {
         String token = Jwts.builder()
                 .setSubject(user.getUsername()) // Use setSubject() instead of subject()
                 .setIssuedAt(new Date(System.currentTimeMillis())) // Use setIssuedAt() instead of issuedAt()
-                .setExpiration(new Date(System.currentTimeMillis() +   60 * 1000)) // Use setExpiration()
-                // .setExpiration(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000)) // Use setExpiration()
+                // .setExpiration(new Date(System.currentTimeMillis() +   60 * 1000)) // Use setExpiration()
+                .setExpiration(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000)) // Use setExpiration()
                                                                                            // instead of expiration()
                 .signWith(getSigninKey())
                 .compact();
