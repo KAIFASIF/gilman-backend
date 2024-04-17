@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.kaif.gilmanbackend.entities.User;
 import com.kaif.gilmanbackend.services.UserService;
-import com.kaif.gilmanbackend.utilities.Utils;
 
 @RestController
 public class UserController {
@@ -16,14 +15,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private Utils utils;
-
     @PostMapping("/signup")
     public ResponseEntity<?> createUser(@RequestBody User payload) {
         try {
-            // utils.isValidName(payload.getName());
-            utils.isValidMobile(payload.getMobile());
             userService.saveUser(payload);
             return ResponseEntity.status(HttpStatus.CREATED).body("Sucsess");
         } catch (Exception e) {
@@ -34,7 +28,8 @@ public class UserController {
     @PostMapping("/signin")
     public ResponseEntity<?> signin(@RequestBody User payload) {
         try {
-            return ResponseEntity.ok(userService.signinUser(payload));
+            var res = userService.signinUser(payload);
+            return ResponseEntity.status(HttpStatus.OK).body(res);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
         }

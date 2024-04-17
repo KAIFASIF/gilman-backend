@@ -10,7 +10,9 @@ import com.kaif.gilmanbackend.config.JwtService;
 import com.kaif.gilmanbackend.dto.UserResponse;
 import com.kaif.gilmanbackend.entities.Token;
 import com.kaif.gilmanbackend.entities.User;
-import com.kaif.gilmanbackend.exceptions.NotAuthorized;
+import com.kaif.gilmanbackend.exceptions.DuplicateException;
+import com.kaif.gilmanbackend.exceptions.NotAuthorizedException;
+import com.kaif.gilmanbackend.exceptions.ResourceNotFoundException;
 import com.kaif.gilmanbackend.repos.TokenRepo;
 import com.kaif.gilmanbackend.repos.UserRepo;
 import com.kaif.gilmanbackend.utilities.Utils;
@@ -39,29 +41,30 @@ public class UserService {
     private AuthenticationManager authenticationManager;
 
     public void saveUser(User payload) {
+        validateUser(payload);
         payload.setPassword(passwordEncoder.encode(payload.getPassword()));
         userRepo.save(payload);
     }
 
     public UserResponse signinUser(User payload) {
-
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        payload.getUsername(),
-                        payload.getPassword()));
-
-        var user = userRepo.findByUsername(payload.getUsername()).orElseThrow();
-        String jwt = jwtService.generateToken(user);
-
+        var mobile = payload.getMobile();
+        utils.isValidMobile(mobile);
+        utils.isValidPassword(payload.getPassword());
+        var user = userRepo.findByMobile(mobile);
+        if (user == null) {
+            throw new ResourceNotFoundException("Invalid credential");
+        }
         if (!user.getIsAuthorized()) {
-            throw new NotAuthorized("You are not authorized to signin, please contact admin");
+            throw new NotAuthorizedException("You are not authorized to signin, please contact admin");
         }
 
+        authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), payload.getPassword()));
+
+        String jwt = jwtService.generateToken(user);
         revokeAllTokenByUser(user);
         saveUserToken(jwt, user);
-
-        return new UserResponse(user.getId(), user.getName(), user.getRole(), jwt);
-
+        return new UserResponse(user.getId(), user.getName(), user.getRole(), user.getMobile(), jwt);
     }
 
     private void revokeAllTokenByUser(User user) {
@@ -84,4 +87,40 @@ public class UserService {
         token.setUser(user);
         tokenRepo.save(token);
     }
+
+    public void validateUser(User payload) {
+        utils.isValidPassword(payload.getPassword());
+        utils.isValidName(payload.getName());
+        isMobileUniqueAndValid(payload.getMobile());
+        isUsernameUniqueAndValid(payload.getUsername());
+        isEmailUnique(payload.getEmail());
+    }
+
+    public void isMobileUniqueAndValid(Long mobile) {
+        utils.isValidMobile(mobile);
+        var res = userRepo.findByMobile(mobile);
+        if (res != null) {
+            throw new DuplicateException("Mobile number already registered");
+        }
+    }
+
+    public void isUsernameUniqueAndValid(String username) {
+        utils.isValidUsername(username);
+        var res = userRepo.findByUsername(username).isPresent();
+        System.out.println(res);
+        if (res) {
+            throw new DuplicateException("Username already exists");
+        }
+    }
+
+    public void isEmailUnique(String email) {
+        if (email != null) {
+            var res = userRepo.findByEmailIgnoreCase(email).isPresent();
+            if (res) {
+                throw new DuplicateException("Email already exists");
+            }
+        }
+
+    }
+
 }
