@@ -9,13 +9,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 
 import com.kaif.gilmanbackend.entities.Token;
-import com.kaif.gilmanbackend.repos.TokenRepository;
+import com.kaif.gilmanbackend.repos.TokenRepo;
 
 @Configuration
 public class CustomLogoutHandler implements LogoutHandler {
 
     @Autowired
-    private TokenRepository tokenRepository;
+    private TokenRepo tokenRepository;
 
     @Override
     public void logout(HttpServletRequest request,

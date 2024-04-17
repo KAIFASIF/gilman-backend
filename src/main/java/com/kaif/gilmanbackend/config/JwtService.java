@@ -1,4 +1,4 @@
-package com.kaif.gilmanbackend.service;
+package com.kaif.gilmanbackend.config;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.kaif.gilmanbackend.entities.User;
-import com.kaif.gilmanbackend.repos.TokenRepository;
+import com.kaif.gilmanbackend.repos.TokenRepo;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
@@ -22,7 +22,7 @@ public class JwtService {
     private final String SECRET_KEY = "4bb6d1dfbafb64a681139d1586b6f1160d18159afd57c8c79136d7490630407c";
 
     @Autowired
-    private TokenRepository tokenRepository;
+    private TokenRepo tokenRepository;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);

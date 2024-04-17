@@ -1,4 +1,4 @@
-package com.kaif.gilmanbackend.filter;
+package com.kaif.gilmanbackend.config;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -13,9 +13,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import com.kaif.gilmanbackend.service.JwtService;
-import com.kaif.gilmanbackend.service.UserDetailsServiceImp;
 
 import java.io.IOException;
 

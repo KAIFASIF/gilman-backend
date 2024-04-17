@@ -16,9 +16,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.kaif.gilmanbackend.filter.JwtAuthenticationFilter;
-import com.kaif.gilmanbackend.service.UserDetailsServiceImp;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {

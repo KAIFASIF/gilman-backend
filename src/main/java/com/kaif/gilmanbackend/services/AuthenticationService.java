@@ -1,4 +1,4 @@
-package com.kaif.gilmanbackend.service;
+package com.kaif.gilmanbackend.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -6,10 +6,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.kaif.gilmanbackend.entities.AuthenticationResponse;
+import com.kaif.gilmanbackend.config.JwtService;
+import com.kaif.gilmanbackend.dto.AuthenticationResponse;
+// import com.kaif.gilmanbackend.entities.AuthenticationResponse;
 import com.kaif.gilmanbackend.entities.Token;
 import com.kaif.gilmanbackend.entities.User;
-import com.kaif.gilmanbackend.repos.TokenRepository;
+import com.kaif.gilmanbackend.repos.TokenRepo;
 import com.kaif.gilmanbackend.repos.UserRepo;
 
 import java.util.List;
@@ -27,7 +29,7 @@ public class AuthenticationService {
     private JwtService jwtService;
 
     @Autowired
-    private TokenRepository tokenRepository;
+    private TokenRepo tokenRepository;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -58,16 +60,16 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(User request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getUsername(),
-                        request.getPassword()));
+        // authenticationManager.authenticate(
+        //         new UsernamePasswordAuthenticationToken(
+        //                 request.getUsername(),
+        //                 request.getPassword()));
 
         User user = userRepo.findByUsername(request.getUsername()).orElseThrow();
         String jwt = jwtService.generateToken(user);
 
-        revokeAllTokenByUser(user);
-        saveUserToken(jwt, user);
+        // revokeAllTokenByUser(user);
+        // saveUserToken(jwt, user);
 
         return new AuthenticationResponse(jwt, "User login was successful");
 

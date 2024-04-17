@@ -1,4 +1,4 @@
-package com.kaif.gilmanbackend.entities;
+package com.kaif.gilmanbackend.dto;
 
 public enum Role {
     USER,
