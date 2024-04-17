@@ -1,49 +1,3 @@
-// package ertgrul.lock.entities;
-
-// import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-// import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-// import ertgrul.lock.utilities.TrimStringDeserializer;
-// import jakarta.persistence.Column;
-// import jakarta.persistence.Entity;
-// import jakarta.persistence.GeneratedValue;
-// import jakarta.persistence.GenerationType;
-// import jakarta.persistence.Id;
-// import lombok.AllArgsConstructor;
-// import lombok.Data;
-// import lombok.NoArgsConstructor;
-
-// @NoArgsConstructor
-// @AllArgsConstructor
-// @Data
-// @Entity
-// @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
-// public class User {
-
-//     @Id
-//     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//     private Long id;
-
-//     @JsonDeserialize(using = TrimStringDeserializer.class)
-//     private String name;
-
-//     @JsonDeserialize(using = TrimStringDeserializer.class)
-//     private String username;
-
-//     @JsonDeserialize(using = TrimStringDeserializer.class)
-//     @Column(unique = true)
-//     private String email;
-
-//     private Long mobile;
-
-//     @JsonDeserialize(using = TrimStringDeserializer.class)
-//     private String password;
-
-//     private Boolean isAuthorized;
-//     @JsonDeserialize(using = TrimStringDeserializer.class)
-
-//     private String role;
-// }
-
 package com.kaif.gilmanbackend.entities;
 
 import jakarta.persistence.*;
@@ -64,20 +18,18 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "user")
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String firstName;
-
-    private String lastName;
-
+    private String name;
+    private String email;
     private String username;
-
+    private Long mobile;
     private String password;
+    private Boolean isAuthorized = true;
 
     @Enumerated(value = EnumType.STRING)
     private Role role;
