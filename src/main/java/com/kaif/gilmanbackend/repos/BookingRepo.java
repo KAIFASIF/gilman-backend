@@ -1,6 +1,7 @@
 package com.kaif.gilmanbackend.repos;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
@@ -26,4 +27,6 @@ public interface BookingRepo extends JpaRepository<Bookings, Long> {
     @Query("SELECT e FROM Bookings e WHERE  e.date>=:date AND e.date=:date AND e.startTime >= :startTime AND e.endTime <= :endTime")
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     List<Bookings> findBookingsByDateAndTimeInRange(LocalDate date, LocalTime startTime, LocalTime endTime);
+
+    Optional<Bookings> findById(Long id);
 }

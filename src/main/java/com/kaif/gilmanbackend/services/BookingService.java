@@ -50,11 +50,11 @@ public class BookingService {
 
     @Transactional
     public void saveTransactions(Bookings payload) { 
-        var details = new TransactionsDetails();
-        details.setAmountPaid(500L);
-        details.setTransactionId("ghghghgh155");
-        details.setMobile(9700174021L);        
-        transactionsDetailsRepo.save(details);
+        // var details = new TransactionsDetails();
+        // details.setAmountPaid(500L);
+        // // details.setTransactionId("ghghghgh155");
+        // // details.setMobile(9700174021L);        
+        // transactionsDetailsRepo.save(details);
     }
 
 }

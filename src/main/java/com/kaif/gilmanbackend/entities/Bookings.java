@@ -6,13 +6,18 @@ import java.time.LocalTime;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Data
@@ -42,4 +47,12 @@ public class Bookings {
         this.startTime = startTime;
         this.endTime = endTime;
     }
+
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
+
+    @ToString.Exclude
+    @OneToOne(fetch = FetchType.LAZY)
+    private TransactionsDetails transactionsDetails;
 }
