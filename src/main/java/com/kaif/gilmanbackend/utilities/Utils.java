@@ -41,20 +41,20 @@ public class Utils {
         }
     }
 
-    public void isValidMobileAndName(Bookings payload) {
-        var namePattern = Pattern.compile("^(?=.*[a-zA-Z])[a-zA-Z0-9 ]*$");
-        var mobilePattern = Pattern.compile("^[6-9]\\d{9}$");
+    // public void isValidMobileAndName(Bookings payload) {
+    //     var namePattern = Pattern.compile("^(?=.*[a-zA-Z])[a-zA-Z0-9 ]*$");
+    //     var mobilePattern = Pattern.compile("^[6-9]\\d{9}$");
 
-        if (payload.getName() == null || payload.getName().trim().isEmpty()
-                || !namePattern.matcher(payload.getName().trim()).matches()) {
-            throw new IllegalArgumentException("Invalid name");
-        }
+    //     if (payload.getName() == null || payload.getName().trim().isEmpty()
+    //             || !namePattern.matcher(payload.getName().trim()).matches()) {
+    //         throw new IllegalArgumentException("Invalid name");
+    //     }
 
-        if (payload.getMobile() == null || payload.getMobile().toString().isEmpty()
-                || !mobilePattern.matcher(payload.getMobile().toString().trim()).matches()) {
-            throw new IllegalArgumentException("Invalid mobile number");
-        }
-    }
+    //     if (payload.getMobile() == null || payload.getMobile().toString().isEmpty()
+    //             || !mobilePattern.matcher(payload.getMobile().toString().trim()).matches()) {
+    //         throw new IllegalArgumentException("Invalid mobile number");
+    //     }
+    // }
 
     public Boolean isPastDate(LocalDate payload) {
         LocalDate currentDate = LocalDate.now();

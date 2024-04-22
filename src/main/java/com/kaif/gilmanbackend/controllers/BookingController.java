@@ -32,7 +32,7 @@ public class BookingController {
     @PostMapping("/book-slot")
     public ResponseEntity<?> test(@RequestBody Bookings payload) {
         try {
-            utils.isValidMobileAndName(payload);
+            // utils.isValidMobileAndName(payload);
             utils.isDateAndTimeValid(payload);
             bookingService.createTestBooking(payload);
             return ResponseEntity.status(HttpStatus.CREATED).body("Slot booked sucessfully");

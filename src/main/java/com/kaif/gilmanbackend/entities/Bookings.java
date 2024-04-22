@@ -25,21 +25,21 @@ public class Bookings {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-
-    private String sport;
-
-    private Long mobile;
-
-    private Boolean isPlayed;
-
     @JsonFormat(pattern = "dd-MM-yyyy")
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate date;
 
+    private String name;
     private LocalTime startTime;
     private LocalTime endTime;
+    private Boolean isBooked = false;
 
     @Version
     private Long version;
+
+    public Bookings(LocalDate date, LocalTime startTime, LocalTime endTime) {
+        this.date = date;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
 }

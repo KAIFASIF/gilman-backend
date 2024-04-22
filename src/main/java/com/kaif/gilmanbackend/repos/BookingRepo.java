@@ -12,6 +12,7 @@ import com.kaif.gilmanbackend.entities.Bookings;
 import jakarta.persistence.LockModeType;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 public interface BookingRepo extends JpaRepository<Bookings, Long> {
 
@@ -21,4 +22,8 @@ public interface BookingRepo extends JpaRepository<Bookings, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT e FROM Bookings e WHERE e.date = :date")
     List<Bookings> findByDateWithLock(@Param("date") LocalDate date);
+
+    @Query("SELECT e FROM Bookings e WHERE  e.date>=:date AND e.date=:date AND e.startTime >= :startTime AND e.endTime <= :endTime")
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    List<Bookings> findBookingsByDateAndTimeInRange(LocalDate date, LocalTime startTime, LocalTime endTime);
 }
