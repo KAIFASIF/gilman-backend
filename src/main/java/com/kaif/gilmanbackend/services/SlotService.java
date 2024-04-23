@@ -16,31 +16,31 @@ import jakarta.transaction.Transactional;
 @Service
 public class SlotService {
 
-    @Autowired
-    private SlotsRepo slotRepo;
+    // @Autowired
+    // private SlotsRepo slotRepo;
 
-    @Autowired
-    private BookingService bookingService;
+    // @Autowired
+    // private BookingService bookingService;
 
-    @Transactional
-    public void saveSlot(Long userId,  LocalDate date, LocalTime startTime, LocalTime endTime) {
+    // @Transactional
+    // public void saveSlot(Long userId,  LocalDate date, LocalTime startTime, LocalTime endTime) {
 
-        var records = slotRepo.findBookingsByDateAndTimeInRange(date, startTime, endTime);        
-        for (Slots ele : records) {
-            if (ele.getIsBooked()) {
-                throw new AlreadyBookedException(
-                        "Please check the available slots on the slot page for the provided date ");
-            }
-            ele.setIsBooked(true);
-            slotRepo.save(ele);
-        }
-        bookingService.saveBooking(userId, date, startTime, endTime);
-    }
+    //     var records = slotRepo.findBookingsByDateAndTimeInRange(date, startTime, endTime);        
+    //     for (Slots ele : records) {
+    //         if (ele.getIsBooked()) {
+    //             throw new AlreadyBookedException(
+    //                     "Please check the available slots on the slot page for the provided date ");
+    //         }
+    //         ele.setIsBooked(true);
+    //         slotRepo.save(ele);
+    //     }
+    //     bookingService.saveBooking(userId, date, startTime, endTime);
+    // }
 
-    @Transactional
-    public void createBooking(Long userId,Booking payload) throws AlreadyBookedException, InterruptedException {
-        saveSlot(userId,  payload.getDate(),payload.getStartTime(), payload.getEndTime());
-    }
+    // @Transactional
+    // public void createBooking(Long userId,Booking payload) throws AlreadyBookedException, InterruptedException {
+    //     saveSlot(userId,  payload.getDate(),payload.getStartTime(), payload.getEndTime());
+    // }
 
    
     // @Transactional
