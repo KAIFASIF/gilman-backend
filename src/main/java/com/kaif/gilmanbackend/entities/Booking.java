@@ -29,11 +29,13 @@ public class Booking {
     private Long id;
 
     @JsonFormat(pattern = "dd-MM-yyyy")
-    @DateTimeFormat(pattern = "dd-MM-yyyy")
-    private LocalDate date;    
+    @DateTimeFormat(pattern = "dd-MM-yyyy") 
+    private LocalDate date;   
+     
     private LocalTime startTime;
     private LocalTime endTime;
     private Boolean isPlayed = false;
+    private String sport;
 
     @Version
     private Long version;
@@ -43,11 +45,12 @@ public class Booking {
     @JsonIgnore
     private User user;    
     
-    public Booking(LocalDate date, LocalTime startTime, LocalTime endTime, User user) {
+    public Booking(LocalDate date, LocalTime startTime, LocalTime endTime, User user, String sport) {
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
         this.user = user;
+        this.sport = sport;
     }
 
 }

@@ -1,18 +1,16 @@
 package com.kaif.gilmanbackend.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.ArrayList;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.kaif.gilmanbackend.entities.Slots;
 import com.kaif.gilmanbackend.repos.BookingRepo;
@@ -28,22 +26,37 @@ public class SlotController {
     @Autowired
     private BookingRepo bookingRepo;    
  
+    @GetMapping("/reset")
+    public ResponseEntity<?> rersetSlots() {
+        try {
+            slotsRepo.deleteAll();
+            // var records = slotRepo.findAll();
+            // for (Slots ele : records) {
+            //     ele.setIsBooked(false);
+            //     slotRepo.save(ele);
+            // }
+            return ResponseEntity.status(HttpStatus.OK).body("Success");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
+        }
+    }
 
-    @PostMapping("/addScheduleBookings")
+
+    @GetMapping("/addScheduleBookings")
     public void tempInsertRecords() {
         List<Slots> payloads = new ArrayList<>();
         var tomorrowDate = LocalDate.now().plusDays(1);
-        payloads.add(new Slots(LocalDate.now(), LocalTime.parse("06:00"), LocalTime.parse("06:30")));
-        payloads.add(new Slots(LocalDate.now(), LocalTime.parse("06:30"), LocalTime.parse("07:00")));
-        payloads.add(new Slots(LocalDate.now(), LocalTime.parse("07:00"), LocalTime.parse("07:30")));
-        payloads.add(new Slots(LocalDate.now(), LocalTime.parse("07:30"), LocalTime.parse("08:00")));
-        payloads.add(new Slots(LocalDate.now(), LocalTime.parse("08:00"), LocalTime.parse("08:30")));
-        payloads.add(new Slots(LocalDate.now(), LocalTime.parse("08:30"), LocalTime.parse("09:00")));
-        payloads.add(new Slots(LocalDate.now(), LocalTime.parse("09:00"), LocalTime.parse("09:30")));
-        payloads.add(new Slots(LocalDate.now(), LocalTime.parse("09:30"), LocalTime.parse("10:00")));
-        payloads.add(new Slots(LocalDate.now(), LocalTime.parse("10:00"), LocalTime.parse("10:30")));
-        payloads.add(new Slots(LocalDate.now(), LocalTime.parse("10:30"), LocalTime.parse("11:00")));
-
+        var dayAfter = LocalDate.now().plusDays(2);
+        // payloads.add(new Slots(LocalDate.now(), LocalTime.parse("06:00"), LocalTime.parse("06:30")));
+        // payloads.add(new Slots(LocalDate.now(), LocalTime.parse("06:30"), LocalTime.parse("07:00")));
+        // payloads.add(new Slots(LocalDate.now(), LocalTime.parse("07:00"), LocalTime.parse("07:30")));
+        // payloads.add(new Slots(LocalDate.now(), LocalTime.parse("07:30"), LocalTime.parse("08:00")));
+        // payloads.add(new Slots(LocalDate.now(), LocalTime.parse("08:00"), LocalTime.parse("08:30")));
+        // payloads.add(new Slots(LocalDate.now(), LocalTime.parse("08:30"), LocalTime.parse("09:00")));
+        // payloads.add(new Slots(LocalDate.now(), LocalTime.parse("09:00"), LocalTime.parse("09:30")));
+        // payloads.add(new Slots(LocalDate.now(), LocalTime.parse("09:30"), LocalTime.parse("10:00")));
+        // payloads.add(new Slots(LocalDate.now(), LocalTime.parse("10:00"), LocalTime.parse("10:30")));
+        // payloads.add(new Slots(LocalDate.now(), LocalTime.parse("10:30"), LocalTime.parse("11:00")));
         payloads.add(new Slots(tomorrowDate, LocalTime.parse("06:00"), LocalTime.parse("06:30")));
         payloads.add(new Slots(tomorrowDate, LocalTime.parse("06:30"), LocalTime.parse("07:00")));
         payloads.add(new Slots(tomorrowDate, LocalTime.parse("07:00"), LocalTime.parse("07:30")));
@@ -54,6 +67,16 @@ public class SlotController {
         payloads.add(new Slots(tomorrowDate, LocalTime.parse("09:30"), LocalTime.parse("10:00")));
         payloads.add(new Slots(tomorrowDate, LocalTime.parse("10:00"), LocalTime.parse("10:30")));
         payloads.add(new Slots(tomorrowDate, LocalTime.parse("10:30"), LocalTime.parse("11:00")));
+        payloads.add(new Slots(dayAfter, LocalTime.parse("06:00"), LocalTime.parse("06:30")));
+        payloads.add(new Slots(dayAfter, LocalTime.parse("06:30"), LocalTime.parse("07:00")));
+        payloads.add(new Slots(dayAfter, LocalTime.parse("07:00"), LocalTime.parse("07:30")));
+        payloads.add(new Slots(dayAfter, LocalTime.parse("07:30"), LocalTime.parse("08:00")));
+        payloads.add(new Slots(dayAfter, LocalTime.parse("08:00"), LocalTime.parse("08:30")));
+        payloads.add(new Slots(dayAfter, LocalTime.parse("08:30"), LocalTime.parse("09:00")));
+        payloads.add(new Slots(dayAfter, LocalTime.parse("09:00"), LocalTime.parse("09:30")));
+        payloads.add(new Slots(dayAfter, LocalTime.parse("09:30"), LocalTime.parse("10:00")));
+        payloads.add(new Slots(dayAfter, LocalTime.parse("10:00"), LocalTime.parse("10:30")));
+        payloads.add(new Slots(dayAfter, LocalTime.parse("10:30"), LocalTime.parse("11:00")));
         slotsRepo.saveAll(payloads);
     }
 

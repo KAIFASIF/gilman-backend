@@ -1,25 +1,25 @@
 package com.kaif.gilmanbackend.controllers;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import org.apache.commons.lang3.function.FailableRunnable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kaif.gilmanbackend.dto.BookingAndTransactionRequest;
 import com.kaif.gilmanbackend.entities.Booking;
+import com.kaif.gilmanbackend.entities.Slots;
+import com.kaif.gilmanbackend.repos.SlotsRepo;
 import com.kaif.gilmanbackend.services.BookingService;
 import com.kaif.gilmanbackend.utilities.Utils;
 
 @RestController
 @RequestMapping("/api/v1/user")
-public class BookingController {
+public class BookingContoller {
 
     @Autowired
     private BookingService bookService;
@@ -27,14 +27,34 @@ public class BookingController {
     @Autowired
     private Utils utils;
 
-    @PostMapping("/book-slot/{userId}")
-    public ResponseEntity<?> createOrder(@PathVariable("userId") Long userId,
+    @Autowired
+    private SlotsRepo slotRepo;
+
+    @PostMapping("/validate-booking-and-create-order/{amount}")
+    public ResponseEntity<?> validateBoookingAndcreateOrder(@PathVariable("amount") Long amount,
             @RequestBody Booking payload) {
         try {
             utils.isDateAndTimeValid(payload);
-            bookService.createOrder(userId, payload);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Slot booked sucessfully");
+            var jsonResponse = bookService.validateBoookingAndcreateOrder(amount, payload);
+            return ResponseEntity.status(HttpStatus.CREATED).body(jsonResponse.toString());
+
+            // slotRepo.unlockRow();
+            // return
+            // ResponseEntity.status(HttpStatus.CREATED).body("jsonResponse.toString(");
         } catch (Exception e) {
+            slotRepo.unlockRow();
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/creating-boooking-and-save-transaction/{userId}")
+    public ResponseEntity<?> saveBookingAndTransaction(@PathVariable("userId") Long userId,
+            @RequestBody BookingAndTransactionRequest payload) {
+        try {
+            bookService.createBookingAndTransaction(userId, payload);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Ground booked sucessfully");
+        } catch (Exception e) {
+            slotRepo.unlockRow();
             return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
         }
     }
@@ -57,30 +77,6 @@ public class BookingController {
     // } catch (Exception e) {
     // return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
     // }
-    // }
-
-    // @PostMapping("/test-slot")
-    // public ResponseEntity<?> bookTicket() {
-    // try {
-    // ExecutorService executor = Executors.newFixedThreadPool(2);
-    // executor.execute(run(bookService::method1));
-    // executor.execute(run(bookService::method2));
-    // executor.shutdown();
-    // // tempResetBookings();
-    // return ResponseEntity.status(HttpStatus.CREATED).body("booked sucessfulluy");
-    // } catch (Exception e) {
-    // return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
-    // }
-    // }
-
-    // private Runnable run(FailableRunnable<Exception> runnable) {
-    // return () -> {
-    // try {
-    // runnable.run();
-    // } catch (Exception e) {
-    // e.printStackTrace();
-    // }
-    // };
     // }
 
 }

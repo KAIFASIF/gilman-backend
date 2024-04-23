@@ -33,7 +33,8 @@ public class Transaction {
     private String razorPayOrdertId;
     private String razorPaySignature;
     private Long amountPaid;
-    private String status;
+    private Long bookingAmount;
+    private String status ="Paid";
 
     @CreatedDate
     private LocalTime time = LocalTime.now();
@@ -54,9 +55,15 @@ public class Transaction {
     @Version
     private Long version;
 
-    public Transaction(User user, Booking booking) {
-        this.booking = booking;
+    public Transaction(User user, Booking booking, Long bookingAmount, Long amountPaid, String razorPayPaymemntId,
+            String razorPayOrdertId, String razorPaySignature) {
         this.user = user;
+        this.booking = booking;
+        this.bookingAmount = bookingAmount;
+        this.amountPaid = amountPaid;
+        this.razorPayPaymemntId = razorPayPaymemntId;
+        this.razorPayOrdertId = razorPayOrdertId;
+        this.razorPaySignature = razorPaySignature;
     }
 
 }

@@ -2,8 +2,11 @@ package com.kaif.gilmanbackend.services;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.kaif.gilmanbackend.dto.BookingAndTransactionRequest;
 import com.kaif.gilmanbackend.entities.Booking;
 import com.kaif.gilmanbackend.entities.Slots;
 import com.kaif.gilmanbackend.entities.Transaction;
@@ -14,10 +17,16 @@ import com.kaif.gilmanbackend.repos.BookingRepo;
 import com.kaif.gilmanbackend.repos.SlotsRepo;
 import com.kaif.gilmanbackend.repos.TransactionRepo;
 import com.kaif.gilmanbackend.repos.UserRepo;
+
 import jakarta.transaction.Transactional;
+import com.razorpay.RazorpayClient;
+import com.razorpay.RazorpayException;
 
 @Service
 public class BookingService {
+
+    @Autowired
+    private SlotsRepo slotRepo;
 
     @Autowired
     private UserRepo userRepo;
@@ -28,37 +37,24 @@ public class BookingService {
     @Autowired
     private TransactionRepo transactionRepo;
 
-    @Autowired
-    private SlotsRepo slotRepo;
-
     @Transactional
-    public void saveTransaction(User user, Long id) {
-        var booking = bookingRepo.findById(id).get();
-        Transaction payments = new Transaction(user, booking);
-        // payemts.setRazorPayOrdertId("Order_Id");
-        // payemts.setRazorPayPaymemntId("payment_ID");
-        // payemts.setRazorPaySignature("signatiure");
-        // payemts.setAmountPaid(4000L);
-        // payemts.setUser(user);
-        // payemts.setBoo(slot);
-        transactionRepo.save(payments);
-
+    public JSONObject createOrder(Long amount) throws RazorpayException {
+        String keyId = "rzp_test_gSK9TTIhMBYv7S";
+        String secretkey = "iVz21pLz35iW7fMRIj7kmmTd";
+        var razorpayClient = new RazorpayClient(keyId, secretkey);
+        JSONObject options = new JSONObject();
+        options.put("amount", amount * 100);
+        options.put("currency", "INR");
+        var orderResponse = razorpayClient.orders.create(options);
+        JSONObject jsonResponse = new JSONObject(orderResponse.toString());
+        return jsonResponse;
     }
 
     @Transactional
-    public void saveBooking(Long userId, LocalDate date, LocalTime startTime, LocalTime endTime) {
-        var user = userRepo.findById(userId).get();
-        Booking payload = new Booking(date, startTime, endTime, user);
-        var res = bookingRepo.save(payload);
-        saveTransaction(user, res.getId());
-    }
+    public JSONObject validateBoooking(Long amount, LocalDate date, LocalTime startTime, LocalTime endTime)
+            throws RazorpayException {
 
-    @Transactional
-    public void createBooking(Long userId, LocalDate date, LocalTime startTime, LocalTime endTime) {
         var records = slotRepo.findBookingsByDateAndTimeInRange(date, startTime, endTime);
-        // System.out.println("************************************************************");
-        // System.out.println(records);
-        // System.out.println("************************************************************");
         if (records.size() == 0) {
             throw new ResourceNotFoundException("Booking not allowed for given date and time");
         }
@@ -70,26 +66,41 @@ public class BookingService {
             ele.setIsBooked(true);
             slotRepo.save(ele);
         }
-        saveBooking(userId, date, startTime, endTime);
+
+        var jsonResponse = createOrder(amount);
+        return jsonResponse;
     }
 
     @Transactional
-    public void createOrder(Long userId, Booking payload) throws AlreadyBookedException, InterruptedException {
-        createBooking(userId, payload.getDate(), payload.getStartTime(), payload.getEndTime());
+    public JSONObject validateBoookingAndcreateOrder(Long amount, Booking payload)
+            throws AlreadyBookedException, InterruptedException, RazorpayException {
+        var jsonResponse = validateBoooking(amount, payload.getDate(), payload.getStartTime(),
+                payload.getEndTime());
+        return jsonResponse;
     }
 
-    // @Transactional
-    // public void method1() throws AlreadyBookedException, InterruptedException {
-    // createBooking(1L, LocalDate.parse("2024-04-24"), LocalTime.parse("06:00"),
-    // LocalTime.parse("07:00"));
-    // Thread.sleep(1000);
-    // }
+    @Transactional
+    public void saveTransaction(User user, Booking booking, Transaction transaction) {
+        Transaction payload = new Transaction(user, booking, transaction.getBookingAmount() / 100,
+                transaction.getAmountPaid() / 100, transaction.getRazorPayPaymemntId(),
+                transaction.getRazorPayOrdertId(), transaction.getRazorPaySignature());
 
-    // @Transactional
-    // public void method2() throws AlreadyBookedException, InterruptedException {
-    // createBooking(2L, LocalDate.parse("2024-04-24"), LocalTime.parse("06:00"),
-    // LocalTime.parse("07:00"));
-    // Thread.sleep(1000);
-    // }
+        transactionRepo.save(payload);
+    }
+
+    @Transactional
+    public void saveBooking(User user, Booking booking, Transaction transaction) {
+        System.out.println(booking);
+        Booking payload = new Booking(booking.getDate(), booking.getStartTime(), booking.getEndTime(), user,
+                booking.getSport());
+        var response = bookingRepo.save(payload);
+        saveTransaction(user, response, transaction);
+    }
+
+    @Transactional
+    public void createBookingAndTransaction(Long userId, BookingAndTransactionRequest payload) {
+        var user = userRepo.findById(userId).get();
+        saveBooking(user, payload.getBooking(), payload.getTransaction());
+    }
 
 }

@@ -16,4 +16,7 @@ public interface SlotsRepo extends JpaRepository<Slots, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     List<Slots> findBookingsByDateAndTimeInRange(LocalDate date, LocalTime startTime, LocalTime endTime);
 
+
+    default void unlockRow() {}
+
 }
