@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kaif.gilmanbackend.entities.Booking;
 import com.kaif.gilmanbackend.entities.Slots;
 import com.kaif.gilmanbackend.exceptions.AlreadyBookedException;
 import com.kaif.gilmanbackend.repos.SlotsRepo;
@@ -22,11 +23,9 @@ public class SlotService {
     private BookingService bookingService;
 
     @Transactional
-    public void saveSlot(Long userId, String name, String date, LocalTime startTime, LocalTime endTime) {
+    public void saveSlot(Long userId,  LocalDate date, LocalTime startTime, LocalTime endTime) {
 
-        LocalDate parsedDate = LocalDate.parse(date);
-        var records = slotRepo.findBookingsByDateAndTimeInRange(parsedDate, startTime, endTime);
-        
+        var records = slotRepo.findBookingsByDateAndTimeInRange(date, startTime, endTime);        
         for (Slots ele : records) {
             if (ele.getIsBooked()) {
                 throw new AlreadyBookedException(
@@ -35,20 +34,43 @@ public class SlotService {
             ele.setIsBooked(true);
             slotRepo.save(ele);
         }
-        bookingService.saveBooking(userId, parsedDate, startTime, endTime);
-
+        bookingService.saveBooking(userId, date, startTime, endTime);
     }
 
     @Transactional
-    public void createBooking1() throws AlreadyBookedException, InterruptedException {
-        saveSlot(1L, "Asif", "2024-04-22", LocalTime.parse("06:00"), LocalTime.parse("07:00"));
-        Thread.sleep(1000);
+    public void createBooking(Long userId,Booking payload) throws AlreadyBookedException, InterruptedException {
+        saveSlot(userId,  payload.getDate(),payload.getStartTime(), payload.getEndTime());
     }
 
-    @Transactional
-    public void createBooking2() throws AlreadyBookedException, InterruptedException {
-        saveSlot(2L, "Kaif", "2024-04-23", LocalTime.parse("06:00"), LocalTime.parse("07:00"));
-        Thread.sleep(1000);
-    }
+   
+    // @Transactional
+    // public void saveSlot(Long userId, String name, String date, LocalTime startTime, LocalTime endTime) {
+
+    //     LocalDate parsedDate = LocalDate.parse(date);
+    //     var records = slotRepo.findBookingsByDateAndTimeInRange(parsedDate, startTime, endTime);
+        
+    //     for (Slots ele : records) {
+    //         if (ele.getIsBooked()) {
+    //             throw new AlreadyBookedException(
+    //                     "Please check the available slots on the slot page for the provided date ");
+    //         }
+    //         ele.setIsBooked(true);
+    //         slotRepo.save(ele);
+    //     }
+    //     bookingService.saveBooking(userId, parsedDate, startTime, endTime);
+
+    // }
+
+    // @Transactional
+    // public void createBooking1() throws AlreadyBookedException, InterruptedException {
+    //     saveSlot(1L, "Asif", "2024-04-22", LocalTime.parse("06:00"), LocalTime.parse("07:00"));
+    //     Thread.sleep(1000);
+    // }
+
+    // @Transactional
+    // public void createBooking2() throws AlreadyBookedException, InterruptedException {
+    //     saveSlot(2L, "Kaif", "2024-04-23", LocalTime.parse("06:00"), LocalTime.parse("07:00"));
+    //     Thread.sleep(1000);
+    // }
 
 }

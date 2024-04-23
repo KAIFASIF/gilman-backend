@@ -9,7 +9,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,6 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Data
 @AllArgsConstructor
@@ -40,6 +40,7 @@ public class Booking {
     
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private User user;    
     
     public Booking(LocalDate date, LocalTime startTime, LocalTime endTime, User user) {

@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kaif.gilmanbackend.dto.Role;
 
 import java.util.Collection;
@@ -38,10 +39,12 @@ public class User implements UserDetails {
 
     @ToString.Exclude
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true )
+    @JsonIgnore
     private List<Booking> booking;
 
     @ToString.Exclude
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
+    @JsonIgnore
     private List<Transaction> transaction;
 
     @OneToMany(mappedBy = "user")

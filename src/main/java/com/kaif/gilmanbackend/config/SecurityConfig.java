@@ -40,7 +40,10 @@ public class SecurityConfig {
                 return http
                                 .csrf(AbstractHttpConfigurer::disable)
                                 .authorizeHttpRequests(
-                                                req -> req.requestMatchers("/signup", "/signin", "/api/v1/user/slots","/addScheduleBookings","/test-slot","/fetchBookings")
+                                                req -> req.requestMatchers("/api/v1/user/signup", "/api/v1/user/signin",
+                                                                "/api/v1/user/slots",
+                                                                "/api/v1/user/addScheduleBookings", "/test-slot",
+                                                                "/fetchBookings")
                                                                 .permitAll()
                                                                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
                                                                 .requestMatchers("/api/v1/user/**").hasAuthority("USER")

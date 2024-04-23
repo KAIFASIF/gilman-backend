@@ -7,6 +7,8 @@ import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Service;
 
+import com.kaif.gilmanbackend.entities.Booking;
+
 
 @Service
 public class Utils {
@@ -81,9 +83,9 @@ public class Utils {
         return payload.isBefore(currentTime);
     }
 
-    // public Boolean isTodayAndPastTime(Bookings payload) {
-    //     return isPastTime(payload.getStartTime()) && isTodayDate(payload.getDate());
-    // }
+    public Boolean isTodayAndPastTime(Booking payload) {
+        return isPastTime(payload.getStartTime()) && isTodayDate(payload.getDate());
+    }
 
     public Boolean isStartTimeEqualOrInRange(LocalTime payloadStartTime, LocalTime recordStartTime,
             LocalTime recordEndTime) {
@@ -111,32 +113,32 @@ public class Utils {
                 || (rangeStart.isAfter(rangeEnd) && (endTime.isAfter(rangeStart) || endTime.isBefore(rangeEnd)));
     }
 
-    // public void isDateAndTimeValid(Bookings payload) {
+    public void isDateAndTimeValid(Booking payload) {
 
-    //     if (isPastDate(payload.getDate())) {
-    //         throw new IllegalArgumentException("Past date bookings is not allowed");
-    //     }
+        if (isPastDate(payload.getDate())) {
+            throw new IllegalArgumentException("Past date bookings is not allowed");
+        }
 
-    //     if (isBookingDatePermitted(payload.getDate())) {
-    //         throw new IllegalArgumentException("Slot cannot be booked the more than 15 days");
-    //     }
+        if (isBookingDatePermitted(payload.getDate())) {
+            throw new IllegalArgumentException("Slot cannot be booked the more than 15 days");
+        }
 
-    //     if (payload.getStartTime().equals(payload.getEndTime())) {
-    //         throw new IllegalArgumentException("start time and end time cannnot be same");
-    //     }
+        if (payload.getStartTime().equals(payload.getEndTime())) {
+            throw new IllegalArgumentException("start time and end time cannnot be same");
+        }
 
-    //     if (payload.getStartTime().isAfter(payload.getEndTime())) {
-    //         throw new IllegalArgumentException("start time cannnot be greater than end time");
-    //     }
+        if (payload.getStartTime().isAfter(payload.getEndTime())) {
+            throw new IllegalArgumentException("start time cannnot be greater than end time");
+        }
 
-    //     if (isStartTimeAllowed(payload.getStartTime()) || isEndTimeAllowed(payload.getEndTime())) {
-    //         throw new IllegalArgumentException("Cannot book between 11 pm to 6:00 am");
-    //     }
+        if (isStartTimeAllowed(payload.getStartTime()) || isEndTimeAllowed(payload.getEndTime())) {
+            throw new IllegalArgumentException("Cannot book between 11 pm to 6:00 am");
+        }
 
-    //     if (isTodayAndPastTime(payload)) {
-    //         throw new IllegalArgumentException("Booking is not allowed as time is already passed");
-    //     }
+        if (isTodayAndPastTime(payload)) {
+            throw new IllegalArgumentException("Booking is not allowed as time is already passed");
+        }
 
-    // }
+    }
 
 }

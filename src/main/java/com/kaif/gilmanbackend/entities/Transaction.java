@@ -17,6 +17,8 @@ import lombok.ToString;
 
 import org.springframework.data.annotation.CreatedDate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -41,10 +43,12 @@ public class Transaction {
 
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private User user;
 
     @ToString.Exclude
     @OneToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private Booking booking;
 
     @Version
