@@ -2,14 +2,20 @@ package com.kaif.gilmanbackend.services;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
 
 import com.kaif.gilmanbackend.dto.BookingAndTransactionRequest;
 import com.kaif.gilmanbackend.entities.Booking;
@@ -22,7 +28,6 @@ import com.kaif.gilmanbackend.repos.BookingRepo;
 import com.kaif.gilmanbackend.repos.SlotsRepo;
 import com.kaif.gilmanbackend.repos.TransactionRepo;
 import com.kaif.gilmanbackend.repos.UserRepo;
-
 
 @Service
 public class BookingService {
@@ -42,6 +47,12 @@ public class BookingService {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Value("${razorpay.key.id}")
+    private String keyId;
+
+    @Value("${razorpay.secret.key}")
+    private String secretKey;
+
     @Transactional
     public void resetLockedRows(Booking payload) {
         var records = slotRepo.findBookingsByDateAndTimeInRange(payload.getDate(), payload.getStartTime(),
@@ -56,9 +67,7 @@ public class BookingService {
 
     @Transactional
     public JSONObject createOrder(Long amount) throws RazorpayException {
-        String keyId = "rzp_test_gSK9TTIhMBYv7S";
-        String secretkey = "iVz21pLz35iW7fMRIj7kmmTd";
-        var razorpayClient = new RazorpayClient(keyId, secretkey);
+        var razorpayClient = new RazorpayClient(keyId, secretKey);
         JSONObject options = new JSONObject();
         options.put("amount", amount * 100);
         options.put("currency", "INR");
@@ -117,6 +126,16 @@ public class BookingService {
     public void createBookingAndTransaction(Long userId, BookingAndTransactionRequest payload) {
         var user = userRepo.findById(userId).get();
         saveBooking(user, payload.getBooking(), payload.getTransaction());
+    }
+
+    // fetch bookings
+    public List<Booking> fetchBookings(Long userId, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
+        Page<Booking> bookingsPage = bookingRepo.findBookingByUserId(userId, pageable);
+        var bookings = bookingsPage.getContent();
+
+        return bookings;
+
     }
 
 }

@@ -33,8 +33,8 @@ public class SlotController {
             slotsRepo.deleteAll();
             // var records = slotRepo.findAll();
             // for (Slots ele : records) {
-            // ele.setIsBooked(false);
-            // slotRepo.save(ele);
+            //     ele.setIsBooked(false);
+            //     slotRepo.save(ele);
             // }
             return ResponseEntity.status(HttpStatus.OK).body("Success");
         } catch (Exception e) {
@@ -42,18 +42,10 @@ public class SlotController {
         }
     }
 
-    // @Scheduled(cron = "0 44 13 * * *")
-    // public void insertRecords() {
-    //     System.out.println("******** 1st ****************");
-    //     tempInsertRecords();
-    // }
-
-    @Scheduled(cron = "0 48 13 * * *")
+    @Scheduled(cron = "0 39 14 * * *")
     public void insertSlots() {
         List<Slots> payloads = new ArrayList<>();
         var tomorrowsDate = LocalDate.now().plusDays(1);
-        
-        System.out.println("******** 2snd****************");
         LocalTime startTime = LocalTime.parse("06:00");
         LocalTime endTime = LocalTime.parse("06:30");
 

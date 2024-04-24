@@ -14,8 +14,8 @@ public class GilmanBackendApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(GilmanBackendApplication.class, args);
 	}
-	
-	@Bean		
+
+	@Bean
 	public WebMvcConfigurer corsConfigurer() {
 		return new WebMvcConfigurer() {
 			@Override
@@ -25,7 +25,7 @@ public class GilmanBackendApplication {
 						.allowedHeaders("*")
 						.allowedMethods("*")
 						.exposedHeaders("*");
-			}	
+			}
 		};
 	}
 

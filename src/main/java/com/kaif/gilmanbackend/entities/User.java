@@ -75,4 +75,17 @@ public class User implements UserDetails {
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
+                ", mobile=" + mobile +
+                ", isAuthorized=" + isAuthorized +
+                ", role=" + role +
+                '}';
+    }
+
 }
