@@ -94,9 +94,14 @@ public class JwtService {
         return token;
     }
 
+    // private SecretKey getSigninKey() {
+    //     byte[] keyBytes = Decoders.BASE64URL.decode(SECRET_KEY);
+    //     return Keys.hmacShaKeyFor(keyBytes);
+    // }
+
     private SecretKey getSigninKey() {
-        byte[] keyBytes = Decoders.BASE64URL.decode(SECRET_KEY);
-        return Keys.hmacShaKeyFor(keyBytes);
+        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
+    
 
 }
