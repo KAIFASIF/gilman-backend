@@ -1,0 +1,73 @@
+#  Devlopment
+# version: "3"
+
+# services:
+#   spring-boot-app:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#     image: gilman_image
+#     container_name: gilman_container
+#     networks:
+#       - my_network
+#     ports:
+#       - "9000:9000"
+#     depends_on:
+#       - postgres
+#     environment:
+#       SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/gilman
+#       SPRING_DATASOURCE_USERNAME: postgres
+#       SPRING_DATASOURCE_PASSWORD: root
+
+#   postgres:
+#     image: postgres
+#     container_name: postgres_container
+#     networks:
+#       - my_network
+#     ports:
+#       - "5432:5432"
+#     environment:
+#       POSTGRES_DB: gilman
+#       POSTGRES_USER: postgres
+#       POSTGRES_PASSWORD: root
+
+# networks:
+#   my_network:
+#     driver: bridge
+
+# Production
+version: "3.8"
+
+services:
+  springboot-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: gilman_image
+    container_name: gilman_container
+    networks:
+      - my_network
+    ports:
+      - "9000:9000"
+    depends_on:
+      - kafka
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/gilman
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+
+  postgres:
+    image: postgres
+    networks:
+      - my_network
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: gilman
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+networks:
+  my_network:
+    driver: bridge
