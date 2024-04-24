@@ -50,12 +50,11 @@ services:
     ports:
       - "9000:9000"
     depends_on:
-      - kafka
       - postgres
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/gilman
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATASOURCE_USERNAME: burak
+      SPRING_DATASOURCE_PASSWORD: 21!Burak
 
   postgres:
     image: postgres
@@ -65,8 +64,8 @@ services:
       - "5432:5432"
     environment:
       POSTGRES_DB: gilman
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: burak
+      POSTGRES_PASSWORD: 21!Burak
 
 networks:
   my_network:
