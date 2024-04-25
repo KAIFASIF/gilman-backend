@@ -57,6 +57,22 @@ public class SlotController {
         slotsRepo.saveAll(payloads);
     }
 
+   
+    @GetMapping("/addScheduleBookings")
+    public void addSlots() {
+        List<Slots> payloads = new ArrayList<>();
+        var tomorrowsDate = LocalDate.now().plusDays(1);
+        LocalTime startTime = LocalTime.parse("06:00");
+        LocalTime endTime = LocalTime.parse("06:30");
+
+        while (endTime.isBefore(LocalTime.parse("23:30"))) {
+            payloads.add(new Slots(tomorrowsDate, startTime, endTime));
+            startTime = endTime;
+            endTime = endTime.plusMinutes(30);
+        }
+        slotsRepo.saveAll(payloads);
+    }
+
     @GetMapping("/slots")
     public ResponseEntity<?> fetchBookedSlots(@RequestParam(required = false) LocalDate date) {
 
