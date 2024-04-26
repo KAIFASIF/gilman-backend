@@ -14,4 +14,6 @@ public class UserAndBookingAndTransaction {
     private Booking booking;
     private String name;
     private Long mobile;
+    private String razorPayPaymemntId;
+    private Long amountPaid;
 }

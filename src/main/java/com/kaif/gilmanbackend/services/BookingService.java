@@ -106,12 +106,15 @@ public class BookingService {
 
     // Below methods are being called from another end points
     @Transactional
-    public void saveTransaction(User user, Booking booking, Transaction transaction) {
-        Transaction payload = new Transaction(user, booking, transaction.getBookingAmount() / 100,
+    public void saveTransaction(User user, Booking bookingPayload, Transaction transaction) {
+        Transaction payload = new Transaction(user, bookingPayload, transaction.getBookingAmount() / 100,
                 transaction.getAmountPaid() / 100, transaction.getRazorPayPaymemntId(),
                 transaction.getRazorPayOrdertId(), transaction.getRazorPaySignature());
 
-        transactionRepo.save(payload);
+        var res = transactionRepo.save(payload);
+        bookingPayload.setTransaction(res);
+        bookingRepo.save(bookingPayload);
+
     }
 
     @Transactional
@@ -119,8 +122,8 @@ public class BookingService {
         System.out.println(booking);
         Booking payload = new Booking(booking.getDate(), booking.getStartTime(), booking.getEndTime(), user,
                 booking.getSport());
-        var response = bookingRepo.save(payload);
-        saveTransaction(user, response, transaction);
+        var bookingResponse = bookingRepo.save(payload);
+        saveTransaction(user, bookingResponse, transaction);
     }
 
     @Transactional

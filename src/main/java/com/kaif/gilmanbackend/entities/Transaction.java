@@ -36,10 +36,10 @@ public class Transaction {
     private Long bookingAmount;
     private String status ="Paid";
 
-    @CreatedDate
+    
     private LocalTime time = LocalTime.now();
 
-    @CreatedDate
+    
     private LocalDate date = LocalDate.now();
 
     @ToString.Exclude

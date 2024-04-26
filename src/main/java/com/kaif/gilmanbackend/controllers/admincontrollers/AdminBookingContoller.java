@@ -22,6 +22,7 @@ public class AdminBookingContoller {
             @RequestParam(required = false, defaultValue = "0", value = "page") Integer page,
             @RequestParam(required = false, defaultValue = "5", value = "size") Integer size) {
         try {
+            //  adminBookingService.fetchBookingsAndUser(page, size);
             var res = adminBookingService.fetchBookingsAndUser(page, size);
             return ResponseEntity.status(HttpStatus.OK).body(res);
         } catch (Exception e) {
