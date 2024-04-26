@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kaif.gilmanbackend.dto.BookingAndTransactionRequest;
+import com.kaif.gilmanbackend.dto.UserAndBookingAndTransaction;
 import com.kaif.gilmanbackend.entities.Booking;
 import com.kaif.gilmanbackend.services.BookingService;
 import com.kaif.gilmanbackend.utilities.Utils;
@@ -34,7 +35,7 @@ public class BookingContoller {
             var jsonResponse = bookService.validateBoookingAndcreateOrder(amount, payload);
             return ResponseEntity.status(HttpStatus.CREATED).body(jsonResponse.toString());
         } catch (Exception e) {
-            bookService.resetLockedRows(payload);
+            // bookService.resetLockedRows(payload);
             return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
         }
     }
@@ -46,7 +47,7 @@ public class BookingContoller {
             bookService.createBookingAndTransaction(userId, payload);
             return ResponseEntity.status(HttpStatus.CREATED).body("Ground booked sucessfully");
         } catch (Exception e) {
-            bookService.resetLockedRows(payload.getBooking());
+            // bookService.resetLockedRows(payload.getBooking());
             return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
         }
     }

@@ -19,6 +19,12 @@ public interface BookingRepo extends JpaRepository<Booking, Long> {
     Optional<Booking> findById(Long id);
     Page<Booking> findBookingByUserId(Long userId, Pageable pageable);
 
+    // @Query("SELECT b, u FROM Booking b JOIN FETCH b.user u")
+    // Page<Booking> findBookings(Pageable pageable);
+
+    @Query("SELECT b, u.mobile, u.name FROM Booking b JOIN b.user u ORDER BY b.id DESC")
+    Page<Object[]> findAllBookingsWithUserMobileAndName(Pageable pageable);
+
     
 
 }

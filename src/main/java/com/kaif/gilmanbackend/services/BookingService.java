@@ -18,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Page;
 
 import com.kaif.gilmanbackend.dto.BookingAndTransactionRequest;
+import com.kaif.gilmanbackend.dto.UserAndBookingAndTransaction;
 import com.kaif.gilmanbackend.entities.Booking;
 import com.kaif.gilmanbackend.entities.Slots;
 import com.kaif.gilmanbackend.entities.Transaction;
