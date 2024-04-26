@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.kaif.gilmanbackend.entities.Slots;
 import com.kaif.gilmanbackend.repos.BookingRepo;
 import com.kaif.gilmanbackend.repos.SlotsRepo;
+import com.kaif.gilmanbackend.repos.TransactionRepo;
 
 @RestController
-@RequestMapping("/api/v1/user")
 public class SlotController {
 
     @Autowired
@@ -27,15 +27,29 @@ public class SlotController {
     @Autowired
     private BookingRepo bookingRepo;
 
-    @GetMapping("/reset")
+    @Autowired
+    private TransactionRepo transactionRepo;
+
+
+    @GetMapping("/api/v1/admin/del")
+    public ResponseEntity<?> delAll() {
+        try {
+            System.out.println("hgghddghsghdsg");
+
+            slotsRepo.deleteAll();
+            bookingRepo.deleteAll();
+            transactionRepo.deleteAll();
+            
+            return ResponseEntity.status(HttpStatus.OK).body("Success");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/api/v1/admin/reset")
     public ResponseEntity<?> rersetSlots() {
         try {
             slotsRepo.deleteAll();
-            // var records = slotRepo.findAll();
-            // for (Slots ele : records) {
-            //     ele.setIsBooked(false);
-            //     slotRepo.save(ele);
-            // }
             return ResponseEntity.status(HttpStatus.OK).body("Success");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
@@ -58,7 +72,7 @@ public class SlotController {
     }
 
    
-    @GetMapping("/addScheduleBookings")
+    @GetMapping("/api/v1/admin/addScheduleBookings")
     public void addSlots() {
         List<Slots> payloads = new ArrayList<>();
         var tomorrowsDate = LocalDate.now().plusDays(1);
@@ -73,7 +87,7 @@ public class SlotController {
         slotsRepo.saveAll(payloads);
     }
 
-    @GetMapping("/slots")
+    @GetMapping("/api/v1/user/slots")
     public ResponseEntity<?> fetchBookedSlots(@RequestParam(required = false) LocalDate date) {
 
         try {
