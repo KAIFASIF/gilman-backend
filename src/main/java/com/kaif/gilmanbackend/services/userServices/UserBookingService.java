@@ -22,7 +22,6 @@ import com.kaif.gilmanbackend.entities.Slots;
 import com.kaif.gilmanbackend.entities.Transaction;
 import com.kaif.gilmanbackend.entities.User;
 import com.kaif.gilmanbackend.exceptions.AlreadyBookedException;
-import com.kaif.gilmanbackend.exceptions.NotAuthorizedException;
 import com.kaif.gilmanbackend.exceptions.ResourceNotFoundException;
 import com.kaif.gilmanbackend.repos.BookingRepo;
 import com.kaif.gilmanbackend.repos.SlotsRepo;
@@ -119,10 +118,6 @@ public class UserBookingService {
 
     @Transactional
     public void saveBooking(User user, Booking booking, Transaction transaction) {
-        // var a = false;
-        // if(!a)
-        // throw new ResourceNotFoundException("test error");
-
         Booking payload = new Booking(booking.getDate(), booking.getStartTime(), booking.getEndTime(), user,
                 booking.getSport());
         var bookingResponse = bookingRepo.save(payload);
@@ -143,11 +138,10 @@ public class UserBookingService {
         var bookingList = bookingRepo.findBookingByUserId(userId, pageable);
 
         Map<String, Object> result = new HashMap<>();
-        result.put("bookings", bookingList.getContent());
+        result.put("booking", bookingList.getContent());
         result.put("count", count);
 
         return result;
-
     }
 
 }

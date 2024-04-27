@@ -1,6 +1,5 @@
 package com.kaif.gilmanbackend.controllers.adminControllers;
 
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -10,8 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
-// import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kaif.gilmanbackend.entities.Slots;
@@ -20,6 +18,7 @@ import com.kaif.gilmanbackend.repos.SlotsRepo;
 import com.kaif.gilmanbackend.repos.TransactionRepo;
 
 @RestController
+@RequestMapping("/api/v1/admin")
 public class SlotController {
 
     @Autowired
@@ -31,23 +30,20 @@ public class SlotController {
     @Autowired
     private TransactionRepo transactionRepo;
 
-
-    @GetMapping("/api/v1/admin/del")
+    @GetMapping("/deleteAll")
     public ResponseEntity<?> delAll() {
         try {
-            System.out.println("hgghddghsghdsg");
-
             slotsRepo.deleteAll();
             bookingRepo.deleteAll();
             transactionRepo.deleteAll();
-            
+
             return ResponseEntity.status(HttpStatus.OK).body("Success");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
         }
     }
 
-    @GetMapping("/api/v1/admin/reset")
+    @GetMapping("/deleteSlots")
     public ResponseEntity<?> rersetSlots() {
         try {
             slotsRepo.deleteAll();
@@ -72,8 +68,7 @@ public class SlotController {
         slotsRepo.saveAll(payloads);
     }
 
-   
-    @GetMapping("/api/v1/admin/addScheduleBookings")
+    @GetMapping("/addScheduleBookings")
     public void addSlots() {
         List<Slots> payloads = new ArrayList<>();
         var tomorrowsDate = LocalDate.now().plusDays(1);
@@ -87,40 +82,5 @@ public class SlotController {
         }
         slotsRepo.saveAll(payloads);
     }
-
-    @GetMapping("/api/v1/user/slots")
-    public ResponseEntity<?> fetchBookedSlots(@RequestParam(required = false) LocalDate date) {
-
-        try {
-            var res = bookingRepo.findByDate(date);
-            return ResponseEntity.status(HttpStatus.OK).body(res);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
-        }
-    }
-
-    // @PostMapping("/test-slot")
-    // public ResponseEntity<?> bookTicket() {
-    // try {
-    // ExecutorService executor = Executors.newFixedThreadPool(2);
-    // executor.execute(run(slotService::createBooking1));
-    // executor.execute(run(slotService::createBooking2));
-    // executor.shutdown();
-    // // tempResetBookings();
-    // return ResponseEntity.status(HttpStatus.CREATED).body("booked sucessfulluy");
-    // } catch (Exception e) {
-    // return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
-    // }
-    // }
-
-    // private Runnable run(FailableRunnable<Exception> runnable) {
-    // return () -> {
-    // try {
-    // runnable.run();
-    // } catch (Exception e) {
-    // e.printStackTrace();
-    // }
-    // };
-    // }
 
 }
