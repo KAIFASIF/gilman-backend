@@ -20,7 +20,7 @@ import com.kaif.gilmanbackend.utilities.Utils;
 @RequestMapping("/api/v1/user")
 public class UserBookingContoller {
 
-     @Autowired
+    @Autowired
     private Utils utils;
 
     @Autowired
@@ -46,7 +46,6 @@ public class UserBookingContoller {
             var jsonResponse = userBookingService.validateBoookingAndcreateOrder(amount, payload);
             return ResponseEntity.status(HttpStatus.CREATED).body(jsonResponse.toString());
         } catch (Exception e) {
-            // bookService.resetLockedRows(payload);
             return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
         }
     }
@@ -58,7 +57,18 @@ public class UserBookingContoller {
             userBookingService.createBookingAndTransaction(userId, payload);
             return ResponseEntity.status(HttpStatus.CREATED).body("Ground booked sucessfully");
         } catch (Exception e) {
-            // bookService.resetLockedRows(payload.getBooking());
+            userBookingService.resetLockedRows(payload.getBooking());
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/resetSlot")
+    public ResponseEntity<?> resetBokings(@RequestBody Booking payload) {
+        try {
+            userBookingService.resetLockedRows(payload);
+            return ResponseEntity.status(HttpStatus.OK).body("Reset");
+        } catch (Exception e) {
+            userBookingService.resetLockedRows(payload);
             return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
         }
     }
