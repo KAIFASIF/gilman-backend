@@ -1,4 +1,4 @@
-package com.kaif.gilmanbackend.controllers;
+package com.kaif.gilmanbackend.controllers.userControllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.kaif.gilmanbackend.entities.User;
-import com.kaif.gilmanbackend.services.UserService;
+import com.kaif.gilmanbackend.services.userServices.UserService;
 
 
 @RequestMapping("/api/v1/user")

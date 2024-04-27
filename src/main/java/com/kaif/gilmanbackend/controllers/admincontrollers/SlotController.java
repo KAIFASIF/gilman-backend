@@ -1,4 +1,5 @@
-package com.kaif.gilmanbackend.controllers;
+package com.kaif.gilmanbackend.controllers.adminControllers;
+
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -9,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+// import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 

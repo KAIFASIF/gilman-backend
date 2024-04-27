@@ -1,75 +1,53 @@
 package com.kaif.gilmanbackend.services.adminservices;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.ResponseEntity;
-import org.springframework.data.domain.Page;
-
-import com.kaif.gilmanbackend.dto.UserAndBookingAndTransaction;
 import com.kaif.gilmanbackend.entities.Booking;
 import com.kaif.gilmanbackend.repos.BookingRepo;
-import com.kaif.gilmanbackend.repos.SlotsRepo;
-import com.kaif.gilmanbackend.repos.TransactionRepo;
-import com.kaif.gilmanbackend.repos.UserRepo;
 
 @Service
 public class AdminBookingService {
 
     @Autowired
-    private UserRepo userRepo;
-
-    @Autowired
     private BookingRepo bookingRepo;
 
-    @Autowired
-    private TransactionRepo transactionRepo;
+    // fetch bookings
+    public Map<String, Object> fetchBookingsUserAndTransaction(Integer page, Integer size) {
+        var count = bookingRepo.count();
 
-    // @Autowired
-    // private UserBookingAndTransaction userBookingAndTransaction;
+        Pageable pageable = PageRequest.of(page, size);
+        List<Object[]> bookingUserTransactionList = bookingRepo.getBookingsWithUsersAndTransactions(pageable);
+        List<Map<String, Object>> bookingDetailsList = bookingUserTransactionList.stream()
+                .map(ele -> {
+                    Booking booking = (Booking) ele[0];
+                    String userName = (String) ele[1];
+                    Long userMobile = (Long) ele[2];
+                    String paymentId = (String) ele[3];
+                    Long amountPaid = (Long) ele[4];
 
-    // fetch bookings And User
-    public List<UserAndBookingAndTransaction>  fetchBookingsAndUser(Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        // Page<Booking> bookingsPage = bookingRepo.findBooking( pageable);
-        // bookingRepo.findAll(Sort.by("id").descending(), pageable);
+                    Map<String, Object> bookingDetails = new HashMap<>();
+                    bookingDetails.put("booking", booking);
+                    bookingDetails.put("name", userName);
+                    bookingDetails.put("mobile", userMobile);
+                    bookingDetails.put("paymentId", paymentId);
+                    bookingDetails.put("amountPaid", amountPaid);
+                    
+                    return bookingDetails;
+                })
+                .collect(Collectors.toList());
 
-        Booking boo = new Booking();
-        boo.setIsPlayed(true);
-        // var bookings = bookingsPage.getContent();
-        // UserAndBookingAndTransaction payload = new UserAndBookingAndTransaction();
-        // var records = bookingRepo.findAll();
-        // // var records = bookingRepo.findAllBookingsWithUserMobileAndName(pageable);
-        // for (Booking ele : records) {
-        // payload.setBooking(ele);
-        // payload.setName(ele.getUser().getName());
-        // payload.setMobile(ele.getUser().getMobile());
+                Map<String, Object> result = new HashMap<>();
+                result.put("bookings", bookingDetailsList);
+                result.put("count", count);
 
-        // }
-        // var records = bookingRepo.findAllBookingsWithUserMobileAndName(pageable);
-        var records = bookingRepo.findAll(pageable);
-        // System.out.println(ele.toString());
+        return result;
 
-        System.out.println("***************************************************");
-        List<UserAndBookingAndTransaction> response = new ArrayList<>();
-        for (Booking ele : records) {
-            var name = ele.getUser().getName();
-            var mobile = ele.getUser().getMobile();
-            var paymentId = ele.getTransaction().getRazorPayPaymemntId();
-            var amountPaid = ele.getTransaction().getAmountPaid();
-            response.add(new UserAndBookingAndTransaction(ele, name, mobile, paymentId, amountPaid));
-        }
-        System.out.println("***************************************************");
-
-        return response;
     }
 
 }

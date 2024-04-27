@@ -1,24 +1,22 @@
-package com.kaif.gilmanbackend.services;
+package com.kaif.gilmanbackend.services.userServices;
 
+import java.util.Map;
+import java.util.HashMap;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Page;
-
 import com.kaif.gilmanbackend.dto.BookingAndTransactionRequest;
-import com.kaif.gilmanbackend.dto.UserAndBookingAndTransaction;
 import com.kaif.gilmanbackend.entities.Booking;
 import com.kaif.gilmanbackend.entities.Slots;
 import com.kaif.gilmanbackend.entities.Transaction;
@@ -31,7 +29,7 @@ import com.kaif.gilmanbackend.repos.TransactionRepo;
 import com.kaif.gilmanbackend.repos.UserRepo;
 
 @Service
-public class BookingService {
+public class UserBookingService {
 
     @Autowired
     private SlotsRepo slotRepo;
@@ -104,11 +102,11 @@ public class BookingService {
         return jsonResponse;
     }
 
-    // Below methods are being called from another end points
+    // Save booking and transaction
     @Transactional
     public void saveTransaction(User user, Booking bookingPayload, Transaction transaction) {
         Transaction payload = new Transaction(user, bookingPayload, transaction.getBookingAmount() / 100,
-                transaction.getAmountPaid() / 100, transaction.getRazorPayPaymemntId(),
+                transaction.getAmountPaid() / 100, transaction.getRazorPayPaymentId(),
                 transaction.getRazorPayOrdertId(), transaction.getRazorPaySignature());
 
         var res = transactionRepo.save(payload);
@@ -126,19 +124,24 @@ public class BookingService {
         saveTransaction(user, bookingResponse, transaction);
     }
 
+    // Below method are being called from another end points
     @Transactional
     public void createBookingAndTransaction(Long userId, BookingAndTransactionRequest payload) {
         var user = userRepo.findById(userId).get();
         saveBooking(user, payload.getBooking(), payload.getTransaction());
     }
 
-    // fetch bookings
-    public List<Booking> fetchBookings(Long userId, Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
-        Page<Booking> bookingsPage = bookingRepo.findBookingByUserId(userId, pageable);
-        var bookings = bookingsPage.getContent();
+    // fetch User bookings
+    public Map<String, Object> fetchUserBookings(Long userId, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        var count = bookingRepo.countByUserId(userId);
+        var bookingList = bookingRepo.findBookingByUserId(userId, pageable);
 
-        return bookings;
+        Map<String, Object> result = new HashMap<>();
+        result.put("bookings", bookingList.getContent());
+        result.put("count", count);
+
+        return result;
 
     }
 

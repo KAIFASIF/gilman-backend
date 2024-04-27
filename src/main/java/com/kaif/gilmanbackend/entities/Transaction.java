@@ -14,9 +14,6 @@ import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
-import org.springframework.data.annotation.CreatedDate;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Data
@@ -29,17 +26,15 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String razorPayPaymemntId;
+    private String razorPayPaymentId;
     private String razorPayOrdertId;
     private String razorPaySignature;
     private Long amountPaid;
     private Long bookingAmount;
-    private String status ="Paid";
+    private String status = "Paid";
 
-    
     private LocalTime time = LocalTime.now();
 
-    
     private LocalDate date = LocalDate.now();
 
     @ToString.Exclude
@@ -55,13 +50,13 @@ public class Transaction {
     @Version
     private Long version;
 
-    public Transaction(User user, Booking booking, Long bookingAmount, Long amountPaid, String razorPayPaymemntId,
+    public Transaction(User user, Booking booking, Long bookingAmount, Long amountPaid, String razorPayPaymentId,
             String razorPayOrdertId, String razorPaySignature) {
         this.user = user;
         this.booking = booking;
         this.bookingAmount = bookingAmount;
         this.amountPaid = amountPaid;
-        this.razorPayPaymemntId = razorPayPaymemntId;
+        this.razorPayPaymentId = razorPayPaymentId;
         this.razorPayOrdertId = razorPayOrdertId;
         this.razorPaySignature = razorPaySignature;
     }

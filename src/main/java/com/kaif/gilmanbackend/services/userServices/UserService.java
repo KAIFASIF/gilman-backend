@@ -1,4 +1,4 @@
-package com.kaif.gilmanbackend.services;
+package com.kaif.gilmanbackend.services.userServices;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
