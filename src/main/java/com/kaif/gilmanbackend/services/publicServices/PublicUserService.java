@@ -69,7 +69,7 @@ public class PublicUserService {
         tokenRepo.saveAll(validTokens);
     }
 
-    private void saveUserToken(String jwt, User user) {
+    public void saveUserToken(String jwt, User user) {
         Token token = new Token();
         token.setToken(jwt);
         token.setLoggedOut(false);

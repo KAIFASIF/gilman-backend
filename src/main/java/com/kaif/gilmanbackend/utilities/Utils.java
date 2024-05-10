@@ -1,5 +1,6 @@
 package com.kaif.gilmanbackend.utilities;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -8,7 +9,6 @@ import java.util.regex.Pattern;
 import org.springframework.stereotype.Service;
 
 import com.kaif.gilmanbackend.entities.Booking;
-
 
 @Service
 public class Utils {
@@ -42,19 +42,30 @@ public class Utils {
         }
     }
 
+    public String calculateTime(LocalTime startTime, LocalTime endTime) {
+        var duration = Duration.between(startTime, endTime);
+        Long minutes = duration.toMinutes();
+
+        Long hours = minutes / 60;
+        Long remainingMinutes = minutes % 60;
+
+        return hours + ":" + remainingMinutes;
+
+    }
+
     // public void isValidMobileAndName(Bookings payload) {
-    //     var namePattern = Pattern.compile("^(?=.*[a-zA-Z])[a-zA-Z0-9 ]*$");
-    //     var mobilePattern = Pattern.compile("^[6-9]\\d{9}$");
+    // var namePattern = Pattern.compile("^(?=.*[a-zA-Z])[a-zA-Z0-9 ]*$");
+    // var mobilePattern = Pattern.compile("^[6-9]\\d{9}$");
 
-    //     if (payload.getName() == null || payload.getName().trim().isEmpty()
-    //             || !namePattern.matcher(payload.getName().trim()).matches()) {
-    //         throw new IllegalArgumentException("Invalid name");
-    //     }
+    // if (payload.getName() == null || payload.getName().trim().isEmpty()
+    // || !namePattern.matcher(payload.getName().trim()).matches()) {
+    // throw new IllegalArgumentException("Invalid name");
+    // }
 
-    //     if (payload.getMobile() == null || payload.getMobile().toString().isEmpty()
-    //             || !mobilePattern.matcher(payload.getMobile().toString().trim()).matches()) {
-    //         throw new IllegalArgumentException("Invalid mobile number");
-    //     }
+    // if (payload.getMobile() == null || payload.getMobile().toString().isEmpty()
+    // || !mobilePattern.matcher(payload.getMobile().toString().trim()).matches()) {
+    // throw new IllegalArgumentException("Invalid mobile number");
+    // }
     // }
 
     public Boolean isPastDate(LocalDate payload) {

@@ -1,5 +1,6 @@
 package com.kaif.gilmanbackend.services;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 // import org.json.JSONObject;
@@ -15,6 +16,8 @@ import com.kaif.gilmanbackend.repos.BookingRepo;
 import com.kaif.gilmanbackend.repos.SlotsRepo;
 import com.kaif.gilmanbackend.repos.TransactionRepo;
 import com.kaif.gilmanbackend.repos.UserRepo;
+import com.kaif.gilmanbackend.utilities.Utils;
+
 import jakarta.transaction.Transactional;
 // import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
@@ -24,6 +27,9 @@ public class TestService {
 
     @Autowired
     private UserRepo userRepo;
+
+    @Autowired
+    private Utils utils;
 
     @Autowired
     private BookingRepo bookingRepo;
@@ -51,7 +57,8 @@ public class TestService {
     @Transactional
     public void saveBooking(Long userId, Long amount, LocalDate date, LocalTime startTime, LocalTime endTime) {
         var user = userRepo.findById(userId).get();
-        Booking payload = new Booking(date, startTime, endTime, user,"Box Cricket");
+        var hours = utils.calculateTime(startTime, endTime);
+        Booking payload = new Booking(date, startTime, endTime, user, "Box Cricket", hours);
         var res = bookingRepo.save(payload);
         saveTransaction(user, res.getId());
 
@@ -59,15 +66,15 @@ public class TestService {
 
     // @Transactional
     // public JSONObject createOrder(Long amount) throws RazorpayException {
-    //     String keyId = "rzp_test_gSK9TTIhMBYv7S";
-    //     String secretkey = "iVz21pLz35iW7fMRIj7kmmTd";
-    //     var razorpayClient = new RazorpayClient(keyId, secretkey);
-    //     JSONObject options = new JSONObject();
-    //     options.put("amount", amount * 100);
-    //     options.put("currency", "INR");
-    //     var orderResponse = razorpayClient.orders.create(options);
-    //     JSONObject jsonResponse = new JSONObject(orderResponse.toString());
-    //     return jsonResponse;
+    // String keyId = "rzp_test_gSK9TTIhMBYv7S";
+    // String secretkey = "iVz21pLz35iW7fMRIj7kmmTd";
+    // var razorpayClient = new RazorpayClient(keyId, secretkey);
+    // JSONObject options = new JSONObject();
+    // options.put("amount", amount * 100);
+    // options.put("currency", "INR");
+    // var orderResponse = razorpayClient.orders.create(options);
+    // JSONObject jsonResponse = new JSONObject(orderResponse.toString());
+    // return jsonResponse;
     // }
 
     @Transactional
@@ -94,25 +101,27 @@ public class TestService {
     }
 
     @Transactional
-    public void validateBoookingAndcreateOrder(Long userId, Long amount, LocalDate date, LocalTime startTime, LocalTime endTime)
-    // public JSONObject validateBoookingAndcreateOrder(Long userId, Long amount, Booking payload)
+    public void validateBoookingAndcreateOrder(Long userId, Long amount, LocalDate date, LocalTime startTime,
+            LocalTime endTime)
+            // public JSONObject validateBoookingAndcreateOrder(Long userId, Long amount,
+            // Booking payload)
             throws AlreadyBookedException, InterruptedException, RazorpayException {
-        validateBoooking(userId, amount,  date, startTime, endTime);
+        validateBoooking(userId, amount, date, startTime, endTime);
         // return jsonResponse;
     }
 
     @Transactional
     public void method1() throws AlreadyBookedException, InterruptedException, RazorpayException {
-        validateBoookingAndcreateOrder(1L,  400L,  LocalDate.parse("2024-04-24"), LocalTime.parse("06:00"), LocalTime.parse("07:00"));
+        validateBoookingAndcreateOrder(1L, 400L, LocalDate.parse("2024-04-24"), LocalTime.parse("06:00"),
+                LocalTime.parse("07:00"));
         Thread.sleep(1000);
     }
 
     @Transactional
     public void method2() throws AlreadyBookedException, InterruptedException, RazorpayException {
-        validateBoookingAndcreateOrder(21L,  2000L,  LocalDate.parse("2024-04-24"), LocalTime.parse("06:00"), LocalTime.parse("07:00"));
+        validateBoookingAndcreateOrder(21L, 2000L, LocalDate.parse("2024-04-24"), LocalTime.parse("06:00"),
+                LocalTime.parse("07:00"));
         Thread.sleep(1000);
     }
-
-    
 
 }

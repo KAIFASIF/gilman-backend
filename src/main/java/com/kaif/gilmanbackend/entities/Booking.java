@@ -1,5 +1,6 @@
 package com.kaif.gilmanbackend.entities;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -39,6 +40,7 @@ public class Booking {
     private LocalTime endTime;
     private Boolean isPlayed = false;
     private String sport;
+    private String hours;
 
     @Version
     private Long version;
@@ -54,12 +56,13 @@ public class Booking {
     @JsonIgnore
     private Transaction transaction;    
     
-    public Booking(LocalDate date, LocalTime startTime, LocalTime endTime, User user, String sport) {
+    public Booking(LocalDate date, LocalTime startTime, LocalTime endTime, User user, String sport, String hours) {
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
         this.user = user;
         this.sport = sport;
+        this.hours = hours;
     }
 
 }

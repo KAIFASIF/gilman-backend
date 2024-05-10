@@ -7,6 +7,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import org.json.JSONObject;
@@ -27,9 +29,13 @@ import com.kaif.gilmanbackend.repos.BookingRepo;
 import com.kaif.gilmanbackend.repos.SlotsRepo;
 import com.kaif.gilmanbackend.repos.TransactionRepo;
 import com.kaif.gilmanbackend.repos.UserRepo;
+import com.kaif.gilmanbackend.utilities.Utils;
 
 @Service
 public class UserBookingService {
+
+    @Autowired
+    private Utils utils;
 
     @Autowired
     private SlotsRepo slotRepo;
@@ -109,17 +115,17 @@ public class UserBookingService {
         Transaction payload = new Transaction(user, bookingPayload, transaction.getBookingAmount() / 100,
                 transaction.getAmountPaid() / 100, transaction.getRazorPayPaymentId(),
                 transaction.getRazorPayOrdertId(), transaction.getRazorPaySignature());
-
         var res = transactionRepo.save(payload);
         bookingPayload.setTransaction(res);
         bookingRepo.save(bookingPayload);
-
     }
 
     @Transactional
     public void saveBooking(User user, Booking booking, Transaction transaction) {
+        var hours = utils.calculateTime(booking.getStartTime(), booking.getEndTime());
+
         Booking payload = new Booking(booking.getDate(), booking.getStartTime(), booking.getEndTime(), user,
-                booking.getSport());
+                booking.getSport(), hours);
         var bookingResponse = bookingRepo.save(payload);
         saveTransaction(user, bookingResponse, transaction);
     }

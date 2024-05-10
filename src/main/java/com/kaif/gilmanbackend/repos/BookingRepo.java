@@ -26,5 +26,17 @@ public interface BookingRepo extends JpaRepository<Booking, Long> {
     @Query("SELECT b, u.name, u.mobile, t.razorPayPaymentId, t.amountPaid FROM Booking b JOIN b.user u JOIN b.transaction t ORDER BY b.id DESC")
     List<Object[]> getBookingsWithUsersAndTransactions(Pageable pageable);
 
+    @Query("SELECT b FROM Booking b JOIN b.user u WHERE u.mobile = :mobile ORDER BY b.id DESC")
+    List<Booking> fetchBookingsByMobile(Long mobile, Pageable pageable);
+
+    @Query("SELECT b, t.razorPayPaymentId, t.amountPaid, u.name, u.mobile FROM Booking b JOIN b.transaction t JOIN b.user u WHERE u.mobile = :mobile ORDER BY b.id DESC, t.id DESC")
+    List<Object[]> findBookingsAndTransactionsByMobile(Long mobile, Pageable pageable);
+
+    @Query("SELECT COUNT(b) FROM Booking b JOIN b.user u WHERE u.mobile = :mobile")
+    int countBookingsByMobile(Long mobile);
+
+    // @Query("SELECT b, t, u FROM Booking b JOIN b.transaction t JOIN b.user u
+    // WHERE u.mobile = :mobile ORDER BY b.id DESC, t.id DESC")
+    // List<Object[]> findBookingsAndTransactionsByMobile(Long mobile);
 
 }
